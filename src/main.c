@@ -1,13 +1,18 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 #include "die.h"
 #include "editor.h"
 #include "terminal.h"
 
+#include <string.h>
+
 void eli_init()
 {
-    eli_terminal_get_size();
+    if (!eli_terminal_get_size()) {
+        eli_die("eli_terminal_get_size()");
+    }
 }
 
 bool eli_process_keypress(char c)
@@ -32,9 +37,18 @@ bool eli_get_and_process_keypress()
     return eli_process_keypress(c);
 }
 
-void eli_refresh_screen()
+void eli_draw()
 {
-    eli_terminal_clear();
+  int y;
+  for (y = 0; y < editor.rows; y++) {
+    write(STDOUT_FILENO, "~\r\n", 3);
+  }
+}
+
+void eli_redraw()
+{
+    eli_terminal_reset();
+    eli_draw();
 }
 
 int main(int argc, char **argv)
@@ -46,11 +60,11 @@ int main(int argc, char **argv)
         eli_die("can't enable raw mode");
     }
 
-    eli_terminal_reset();
+    eli_init();
 
     bool running = true;
     while (running) {
-        eli_refresh_screen();
+        eli_redraw();
         running = eli_get_and_process_keypress();
     }
 

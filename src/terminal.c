@@ -15,12 +15,12 @@ bool eli_terminal_get_size()
 {
     struct winsize ws;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
-        return -1;
+        return false;
     }
 
     editor.cols = ws.ws_col;
     editor.rows = ws.ws_row;
-    return 0;
+    return true;
 }
 
 void eli_terminal_clear()
