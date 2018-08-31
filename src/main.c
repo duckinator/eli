@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,13 +12,17 @@ int main(int argc, char **argv)
 
     eli_terminal_enable_raw_mode();
 
-    char c;
-    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
+    while (true) {
+        char c = '\0';
+        read(STDIN_FILENO, &c, 1);
+
         if (iscntrl(c)) {
             printf("%d\r\n", c);
         } else {
             printf("%d ('%c')\r\n", c, c);
         }
+
+        if (c == 'q') { break; }
     }
 
     return 0;
