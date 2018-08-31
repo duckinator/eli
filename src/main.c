@@ -45,5 +45,6 @@ int main(int argc, char **argv)
         running = eli_get_and_process_keypress();
     }
 
+    eli_terminal_reset();
     return 0;
 }

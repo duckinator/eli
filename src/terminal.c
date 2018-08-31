@@ -1,7 +1,9 @@
 #define _DEFAULT_SOURCE
 #include <errno.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <termios.h>
 #include <unistd.h>
 #include "die.h"
@@ -12,6 +14,19 @@ static struct termios original_termios;
 void eli_terminal_clear()
 {
     write(STDOUT_FILENO, "\x1b[2J", 4);
+}
+
+void eli_terminal_move_cursor(size_t row, size_t col)
+{
+    char str[32];
+    snprintf(str, 10, "\x1b[%zu;%zuH", row, col);
+    write(STDOUT_FILENO, str, strlen(str));
+}
+
+void eli_terminal_reset()
+{
+    eli_terminal_clear();
+    eli_terminal_move_cursor(0, 0);
 }
 
 char eli_terminal_read_key()
