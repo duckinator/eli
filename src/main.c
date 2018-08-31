@@ -7,6 +7,27 @@
 #include "die.h"
 #include "terminal.h"
 
+typedef struct eli_keypress_result_s {
+    bool should_exit;
+    int exit_code;
+} eli_keypress_result;
+
+bool eli_process_keypress(char c)
+{
+    bool should_exit = false;
+
+    switch (c) {
+    case CTRL_KEY('q'):
+        should_exit = true;
+        break;
+    default:
+        printf("%c", c);
+        break;
+    }
+
+    return should_exit;
+}
+
 int main(int argc, char **argv)
 {
     (void)argc;
@@ -17,23 +38,12 @@ int main(int argc, char **argv)
     }
 
     while (true) {
-        char c = '\0';
-        read(STDIN_FILENO, &c, 1);
+        char c = eli_terminal_read_key();
+        bool should_exit = eli_process_keypress(c);
 
-        if(c == -1) {
-            if (errno == EAGAIN) {
-                continue;
-            }
-            eli_die("read()");
+        if (should_exit) {
+            break;
         }
-
-        if (iscntrl(c)) {
-            printf("%d\r\n", c);
-        } else {
-            printf("%d ('%c')\r\n", c, c);
-        }
-
-        if (c == 'q') { break; }
     }
 
     return 0;

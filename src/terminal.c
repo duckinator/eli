@@ -1,11 +1,32 @@
 #define _DEFAULT_SOURCE
-#include <termios.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <termios.h>
 #include <unistd.h>
+#include "die.h"
 #include "terminal.h"
 
 static struct termios original_termios;
+
+char eli_terminal_read_key()
+{
+    ssize_t nread;
+    char c;
+
+    while (true) {
+        nread = read(STDIN_FILENO, &c, 1);
+        if (nread == 1) {
+            break;
+        }
+
+        if (nread == -1 && errno != EAGAIN) {
+            eli_die("read()");
+        }
+    }
+
+    return c;
+}
 
 void eli_terminal_disable_raw_mode()
 {
