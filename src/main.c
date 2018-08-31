@@ -7,25 +7,26 @@
 #include "die.h"
 #include "terminal.h"
 
-typedef struct eli_keypress_result_s {
-    bool should_exit;
-    int exit_code;
-} eli_keypress_result;
-
 bool eli_process_keypress(char c)
 {
-    bool should_exit = false;
+    bool running = true;
 
     switch (c) {
     case CTRL_KEY('q'):
-        should_exit = true;
+        running = false;
         break;
     default:
         printf("%c", c);
         break;
     }
 
-    return should_exit;
+    return running;
+}
+
+bool eli_get_and_process_keypress()
+{
+    char c = eli_terminal_read_key();
+    return eli_process_keypress(c);
 }
 
 void eli_refresh_screen()
@@ -42,14 +43,10 @@ int main(int argc, char **argv)
         eli_die("can't enable raw mode");
     }
 
-    while (true) {
+    bool running = true;
+    while (running) {
         eli_refresh_screen();
-        char c = eli_terminal_read_key();
-        bool should_exit = eli_process_keypress(c);
-
-        if (should_exit) {
-            break;
-        }
+        running = eli_get_and_process_keypress();
     }
 
     return 0;
