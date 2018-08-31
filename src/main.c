@@ -1,8 +1,10 @@
 #include <ctype.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "die.h"
 #include "terminal.h"
 
 int main(int argc, char **argv)
@@ -15,6 +17,13 @@ int main(int argc, char **argv)
     while (true) {
         char c = '\0';
         read(STDIN_FILENO, &c, 1);
+
+        if(c == -1) {
+            if (errno == EAGAIN) {
+                continue;
+            }
+            eli_die("read()");
+        }
 
         if (iscntrl(c)) {
             printf("%d\r\n", c);
