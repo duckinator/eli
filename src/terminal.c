@@ -11,8 +11,6 @@
 #include "editor.h"
 #include "terminal.h"
 
-//static struct termios original_termios;
-
 bool eli_terminal_get_size()
 {
     struct winsize ws;
