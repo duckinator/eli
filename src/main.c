@@ -28,6 +28,11 @@ bool eli_process_keypress(char c)
     return should_exit;
 }
 
+void eli_refresh_screen()
+{
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+}
+
 int main(int argc, char **argv)
 {
     (void)argc;
@@ -38,6 +43,7 @@ int main(int argc, char **argv)
     }
 
     while (true) {
+        eli_refresh_screen();
         char c = eli_terminal_read_key();
         bool should_exit = eli_process_keypress(c);
 
