@@ -12,7 +12,9 @@ int main(int argc, char **argv)
     (void)argc;
     (void)argv;
 
-    eli_terminal_enable_raw_mode();
+    if (!eli_terminal_enable_raw_mode()) {
+        eli_die("can't enable raw mode");
+    }
 
     while (true) {
         char c = '\0';
