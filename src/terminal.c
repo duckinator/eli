@@ -9,6 +9,11 @@
 
 static struct termios original_termios;
 
+void eli_terminal_clear()
+{
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+}
+
 char eli_terminal_read_key()
 {
     ssize_t nread;

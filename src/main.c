@@ -31,7 +31,7 @@ bool eli_get_and_process_keypress()
 
 void eli_refresh_screen()
 {
-    write(STDOUT_FILENO, "\x1b[2J", 4);
+    eli_terminal_clear();
 }
 
 int main(int argc, char **argv)
