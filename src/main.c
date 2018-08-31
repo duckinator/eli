@@ -1,7 +1,14 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <sys/ioctl.h>
 #include "die.h"
+#include "editor.h"
 #include "terminal.h"
+
+void eli_init()
+{
+    eli_terminal_get_size();
+}
 
 bool eli_process_keypress(char c)
 {
@@ -38,6 +45,8 @@ int main(int argc, char **argv)
     if (!eli_terminal_enable_raw_mode()) {
         eli_die("can't enable raw mode");
     }
+
+    eli_terminal_reset();
 
     bool running = true;
     while (running) {

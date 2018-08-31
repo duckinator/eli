@@ -5,6 +5,7 @@
 
 #define CTRL_KEY(k) ((k) & 0x1f)
 
+bool eli_terminal_get_size(void);
 void eli_terminal_clear(void);
 void eli_terminal_move_cursor(size_t row, size_t col);
 void eli_terminal_reset(void);
